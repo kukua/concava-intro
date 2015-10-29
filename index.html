@@ -6,7 +6,7 @@
 	<title>Introduction to ConCaVa</title>
 
 	<meta name="description" content="Introduction to ConCaVa. Convert, calibrate, and validate sensor data.">
-	<meta name="author" content="Kukua">
+	<meta name="author" content="Maurits van Mastrigt <maurits@kukua.cc>">
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -62,42 +62,19 @@
 
 		<section>
 			<h2>Why?</h2>
-			<p>Big problems require a scalable and generic solution.</p>
+			<p>Room for improvement in efficiently sending and storing sensor data.</p>
+			<p>Several companies doing the same thing.</p>
+			<p>Common problems require a scalable and generic solution.</p>
 		</section>
 
 		<section>
 			<h2>Problem</h2>
 			<ul>
-				<li>Calibrating, validating, and storing sensor data is hard</li>
-				<li>Why reinvent the wheel?</li>
+				<li>The current formats (XML, JSON) require a lot of bandwidth</li>
+				<li>This costs money</li>
+				<li>Calibrating, validating, and storing sensor data is difficult</li>
+				<li>Why keep reinventing the wheel?</li>
 			</ul>
-		</section>
-
-		<section>
-			<section>
-				<h2>Solution</h2>
-				<ul>
-					<li>ConCaVa: Convert, calibrate, and validate</li>
-					<li>Replaceable components</li>
-					<li>Token based authentication</li>
-					<li>Plug-and-play/custom connectors</li>
-				</ul>
-			</section>
-			<section>
-				<img class="no-style" src="img/architecture.png"/>
-			</section>
-			<section>
-				<h3>Connectors</h3>
-				<ul>
-					<li>Placed close to the sensors</li>
-					<li>Collect and convert payload to any binary format</li>
-					<li>Send payload and authentication token to ConCaVa</li>
-				</ul>
-			</section>
-			<section>
-				<h3>Example dataflow</h3>
-				<img class="no-style" src="img/dataflow.png"/>
-			</section>
 		</section>
 
 		<section>
@@ -109,7 +86,7 @@
 				<h3>Constraints</h3>
 				<ul>
 					<li>Limited package size (51 bytes)</li>
-					<li>"begrenzing aan gebruik van het spectrum"?</li>
+					<li>886Mhz spectrum, with limiting throughput</li>
 				</ul>
 			</section>
 			<section>
@@ -124,6 +101,7 @@
 					<li>Humidity</li>
 					<li>Barometric pressure</li>
 					<li>Ultraviolet (UV) light</li>
+					<li>Solar radiation</li>
 				</ul>
 			</section>
 			<section>
@@ -142,9 +120,9 @@
 http://weatherstation.wunderground.com/weatherstation/updateweathers
 tation.php?id=KCASANFR5&password=XXXXXX&dateutc=2000-01-01+10%3A32%3
 A35&windspeedmph=12&winddir=230&windgustmph=12&windgustdir=230&raini
-n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
+n=0&tempf=70&humidity=90&baromin=29.1&uvl=20&solarrad=10
 				</code></pre>
-				<p>~173 bytes of data</p>
+				<p>~185 bytes of data</p>
 			</section>
 			<section>
 				<h3>XML data</h3>
@@ -163,9 +141,10 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 	<humidity>90</humidity>
 	<baromin>29.1</baromin>
 	<uvl>20</uvl>
+	<solarrad>10</solarrad>
 </data>
 				</code></pre>
-				<p>~370 bytes of data</p>
+				<p>~393 bytes of data</p>
 			</section>
 			<section>
 				<h3>Binary data</h3>
@@ -183,9 +162,10 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 						<li>Humidity = 1 byte</li>
 						<li>Barometric pressure = 1 byte</li>
 						<li>Ultraviolet (UV) light = 1 byte</li>
+						<li>Solar radiation = 1 byte</li>
 					</ul>
 				</small>
-				<p>40 bytes of data</p>
+				<p>41 bytes of data</p>
 			</section>
 		</section>
 
@@ -200,7 +180,7 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 			</section>
 			<section>
 				<h3>Parsing</h3>
-				<h4>Which byte contains what data?</h4>
+				<h4>Which byte(s) contains what data?</h4>
 				<ul>
 					<li>Metadata required to make sense of the data</li>
 					<li>Dynamic metadata enables flexible binary payload</li>
@@ -210,29 +190,45 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 
 		<section>
 			<section>
-				<h2>This is where ConCaVa comes in</h2>
-				<p>ConCaVa is a generic binary payload processor.</p>
-				<p>Determines the metadata by device ID.</p>
-				<p>Used to convert, calibrate, and validate the sensor data.</p>
-				<p>Stores the sensor data in the Cloud Storage<br/>(the Orion Context Broker, for example).</p>
+				<h2>Solution</h2>
+				<h4>ConCaVa: Convert, calibrate, and validate</h4>
+				<ul>
+					<li>Generic binary payload processor</li>
+					<li>Replaceable components</li>
+					<li>Token based authentication</li>
+					<li>Plug-and-play/custom connectors</li>
+					<li>Stores sensor data in Cloud Storage<br/>(the Orion Context Broker, for example)</li>
+				</ul>
+				<p><small>Source on Github: <a href="https://github.com/kukua/" target="_blank">https://github.com/kukua/</a></small></p>
+			</section>
+			<section>
+				<img class="no-style" src="img/architecture.png"/>
+			</section>
+			<section>
+				<h3>General dataflow</h3>
+				<img class="no-style" src="img/dataflow.png"/>
+			</section>
+			<section>
+				<h3>LoRaWAN dataflow</h3>
+				<img class="no-style" src="img/dataflow_lora.png"/>
 			</section>
 			<section>
 				<h3>Three simple steps</h3>
 				<ol class="spatious">
 					<li>Convert: use metadata to parse the binary payload</li>
-					<li>Calibrate: filter out sensor misreadings<br/>(e.g. temperatures below −273.15°C)</li>
-					<li>Validate: transform data to desired format<br/>(e.g. convert Fahrenheit to Celcius)</li>
+					<li>Calibrate: transform data to desired format<br/>(e.g. convert Fahrenheit to Celcius)</li>
+					<li>Validate: correct sensor misreadings<br/>(e.g. temperatures below −273.15°C)</li>
 				</ol>
-				<p>ConCaVa supports every thinkable rule for converting, validating, and calibrating sensor data.</p>
+				<p>ConCaVa supports every thinkable rule for converting, calibrating, and validating sensor data.</p>
 			</section>
 			<section>
 				<h3>Example</h3>
 				<p>For example: wind direction of 1 byte (integer value 0-255).</p>
-				<pre><code class="lang-http">
-Convert:      binary 00011110 = integer value 30
-Calibrate:    0 ≤ value ≤ 255
-Validator:    value = 360 * (value / 255)
-Result:       42.4°
+				<pre><code>
+Convert:    binary 00011110 = integer value 30
+Calibrate:  value = 360 * (value / 255)
+Validate:   0 ≤ value ≤ 255
+Result:     42.4°
 				</code></pre>
 			</section>
 		</section>
@@ -240,9 +236,8 @@ Result:       42.4°
 		<section>
 			<h2>Highly customizable</h2>
 			<ul>
-				<li>Configurable</li>
-				<li>Dynamic metadata</li>
-				<li>Custom validators</li>
+				<li>Dynamic metadata allows any format of binary payload</li>
+				<li>Custom calibrate functions</li>
 				<li>Replaceable components
 					<ul>
 						<li>Cloud Storage</li>
@@ -257,11 +252,20 @@ Result:       42.4°
 			<h2>Roadmap</h2>
 			<ul>
 				<li>Open-source components</li>
-				<li>Configuration options</li>
+				<li>Easy setup (Docker containers)</li>
 				<li>Documented</li>
 				<li>Automated testing (unit-tests)</li>
 				<li>Graphical interface, for managing metadata and viewing sensor data</li>
 			</ul>
+		</section>
+
+		<section>
+			<h2>The end</h2>
+			<p>Questions?</p>
+			<p><br/></p>
+			<p><small><a href="http://kukua.cc">http://kukua.cc</a></small><br/>
+				<small><a href="https://github.com/kukua/">https://github.com/kukua/</a></small>
+			</p>
 		</section>
 	</div>
 </div>
