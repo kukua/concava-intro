@@ -21,11 +21,11 @@
 
 	<!-- Printing and PDF exports -->
 	<script>
-		var link = document.createElement( 'link' );
+		var link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
-		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-		document.getElementsByTagName( 'head' )[0].appendChild( link );
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
 	</script>
 
 	<!--[if lt IE 9]>
@@ -45,20 +45,24 @@
 </head>
 <body>
 
+<!--
+- http://character-code.com/arrows-html-codes.php
+- https://mothereff.in/byte-counter
+-->
+
 <div class="reveal">
 	<div class="slides">
 		<section>
 			<h1>ConCaVa</h1>
 			<h3>A functional &amp; technical introduction</h3>
 			<p>
-				<small>Created by Kukua</small>
+				<small>by Kukua</small>
 			</p>
 		</section>
 
 		<section>
 			<h2>Why?</h2>
-			<p>Problem &nbsp;&#10140;&nbsp; Generic solution</p>
-			<!-- http://character-code.com/arrows-html-codes.php -->
+			<p>Big problems require a scalable and generic solution.</p>
 		</section>
 
 		<section>
@@ -71,16 +75,28 @@
 
 		<section>
 			<section>
-				<h2>Generic solution</h2>
+				<h2>Solution</h2>
 				<ul>
-					<li>ConCaVa: Convert, calibrate, and validate.</li>
+					<li>ConCaVa: Convert, calibrate, and validate</li>
 					<li>Replaceable components</li>
 					<li>Token based authentication</li>
-					<li>Pluggable connectors</li>
+					<li>Plug-and-play/custom connectors</li>
 				</ul>
 			</section>
 			<section>
 				<img class="no-style" src="img/architecture.png"/>
+			</section>
+			<section>
+				<h3>Connectors</h3>
+				<ul>
+					<li>Placed close to the sensors</li>
+					<li>Collect and convert payload to any binary format</li>
+					<li>Send payload and authentication token to ConCaVa</li>
+				</ul>
+			</section>
+			<section>
+				<h3>Example dataflow</h3>
+				<img class="no-style" src="img/dataflow.png"/>
 			</section>
 		</section>
 
@@ -90,13 +106,14 @@
 				<h4>LoRa weather station</h4>
 			</section>
 			<section>
-				<h2>Constraints</h2>
+				<h3>Constraints</h3>
 				<ul>
 					<li>Limited package size (51 bytes)</li>
+					<li>"begrenzing aan gebruik van het spectrum"?</li>
 				</ul>
 			</section>
 			<section>
-				<h2>Attributes</h2>
+				<h3>Attributes</h3>
 				<ul>
 					<li>Wind speed</li>
 					<li>Wind direction</li>
@@ -110,17 +127,16 @@
 				</ul>
 			</section>
 			<section>
-				<h2>Ways to get the data across</h2>
+				<h3>Ways to get the data across</h3>
 				<ul>
 					<li>API url parameters</h1>
 					<li>XML data</h1>
 					<li>Binary data</h1>
-					<li>&hellip;</li>
 				</ul>
-				<p>Smaller payload size is better.</p>
+				<p>Smaller payload sizes are better.</p>
 			</section>
 			<section>
-				<h2>API url parameters</h2>
+				<h3>API url parameters</h3>
 				<h4>The traditional way</h4>
 				<pre><code data-trim>
 http://weatherstation.wunderground.com/weatherstation/updateweathers
@@ -129,10 +145,9 @@ A35&windspeedmph=12&winddir=230&windgustmph=12&windgustdir=230&raini
 n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 				</code></pre>
 				<p>~173 bytes of data</p>
-				<!-- https://mothereff.in/byte-counter -->
 			</section>
 			<section>
-				<h2>XML data</h2>
+				<h3>XML data</h3>
 				<pre><code data-trim>
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
@@ -153,7 +168,7 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 				<p>~370 bytes of data</p>
 			</section>
 			<section>
-				<h2>Binary data</h2>
+				<h3>Binary data</h3>
 				<small>
 					<ul>
 						<li>ID = 8 bytes</li>
@@ -176,7 +191,7 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 
 		<section>
 			<section>
-				<h2>Binary data</h2>
+				<h2>Binary payload</h2>
 				<ul>
 					<li>Efficient</li>
 					<li>Flexible</li>
@@ -184,37 +199,69 @@ n=0&tempf=70&humidity=90&baromin=29.1&uvl=20
 				</ul>
 			</section>
 			<section>
-				<h2>Parsing</h2>
+				<h3>Parsing</h3>
 				<h4>Which byte contains what data?</h4>
 				<ul>
 					<li>Metadata required to make sense of the data</li>
-					<li>Dynamic metadata = flexible binary payload</li>
+					<li>Dynamic metadata enables flexible binary payload</li>
 				</ul>
 			</section>
+		</section>
+
+		<section>
 			<section>
 				<h2>This is where ConCaVa comes in</h2>
 				<p>ConCaVa is a generic binary payload processor.</p>
 				<p>Determines the metadata by device ID.</p>
 				<p>Used to convert, calibrate, and validate the sensor data.</p>
-				<p>Finally ConCaVa stores the sensor data in the Cloud Storage (the Orion Context Broker, for example).</p>
+				<p>Stores the sensor data in the Cloud Storage<br/>(the Orion Context Broker, for example).</p>
 			</section>
 			<section>
-				<h2>Three simple steps</h2>
+				<h3>Three simple steps</h3>
 				<ol class="spatious">
 					<li>Convert: use metadata to parse the binary payload</li>
 					<li>Calibrate: filter out sensor misreadings<br/>(e.g. temperatures below −273.15°C)</li>
 					<li>Validate: transform data to desired format<br/>(e.g. convert Fahrenheit to Celcius)</li>
 				</ol>
+				<p>ConCaVa supports every thinkable rule for converting, validating, and calibrating sensor data.</p>
 			</section>
 			<section>
-				<h2>Example</h2>
+				<h3>Example</h3>
 				<p>For example: wind direction of 1 byte (integer value 0-255).</p>
-				<pre><code>
+				<pre><code class="lang-http">
 Convert:      binary 00011110 = integer value 30
 Calibrate:    0 ≤ value ≤ 255
 Validator:    value = 360 * (value / 255)
 Result:       42.4°
 				</code></pre>
+			</section>
+		</section>
+
+		<section>
+			<h2>Highly customizable</h2>
+			<ul>
+				<li>Configurable</li>
+				<li>Dynamic metadata</li>
+				<li>Custom validators</li>
+				<li>Replaceable components
+					<ul>
+						<li>Cloud Storage</li>
+						<li>Token-based authenticator</li>
+						<li>Connectors</li>
+					</ul>
+				</li>
+				</ul>
+		</section>
+
+		<section>
+			<h2>Roadmap</h2>
+			<ul>
+				<li>Open-source components</li>
+				<li>Configuration options</li>
+				<li>Documented</li>
+				<li>Automated testing (unit-tests)</li>
+				<li>Graphical interface, for managing metadata and viewing sensor data</li>
+			</ul>
 		</section>
 	</div>
 </div>

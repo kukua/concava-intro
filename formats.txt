@@ -1,0 +1,24 @@
+Sensor format
+
+	{"temperature": 20.4, "humidity": 90}
+
+LoRa format
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<DevEUI_uplink xmlns="http://uri.actility.com/lora">
+		<Time>2015-10-22T13:39:59.489+02:00</Time>
+		<DevEUI>F03D291000001180</DevEUI>
+		<payload_hex>32332e31342c2032332e32302c20313031342c2035352e3538</payload_hex>
+		...
+	</DevEUI_uplink>
+
+Binary payload format
+
+	AABBCCDD 55FEF55EFE03F5
+	   |         |
+	   ID        Binary payload
+
+Storage format
+
+	{"temperature": 20.4, "humidity": 90}
+
